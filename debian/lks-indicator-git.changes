@@ -1,0 +1,28 @@
+Format: 1.8
+Date: Sun, 17 Jul 2016 13:36:43 +0530
+Source: lks-indicator
+Binary: lks-indicator
+Architecture: source all
+Version: 1.0
+Distribution: RELEASED
+Urgency: medium
+Maintainer: Sergiy Kolodyazhnyy, <1047481448@qq.com
+Changed-By: Sergiy Kolodyazhnyy <1047481448@qq.com>
+Description:
+ lks-indicator - An indicator for Lock keys
+Changes:
+ lks-indicator (1.0) RELEASED; urgency=medium
+ .
+   * Initial release. Builds from git.
+Checksums-Sha1:
+ bf8d62213fdfc4fc1df0b0d790fb0a56f5ea77f2 552 lks-indicator_1.0.dsc
+ 5f31a6a2fbf24cc540999245e74ddfd9a81d307b 35412 lks-indicator_1.0.tar.gz
+ d0d2132105471af0e588a5f24c153d70e2224d7f 2184 lks-indicator_1.0_all.deb
+Checksums-Sha256:
+ f90d3fda307431f2313e774067aaa865bbb0f9081ce993bce3ff4f90901a290b 552 lks-indicator_1.0.dsc
+ 474fe3af32effe2cc77dd5fafa5a0d76547ca820b55b71be3a114f090cbb9e91 35412 lks-indicator_1.0.tar.gz
+ 21e05e7d4ce250822e7ebb954acceb5be2ad4547bff110dede338931752cb53f 2184 lks-indicator_1.0_all.deb
+Files:
+ 38cd85d1336e5b42b2d43af26bfa7528 552 python optional lks-indicator_1.0.dsc
+ fa413aa7a178ea9a674eed506af1b85b 35412 python optional lks-indicator_1.0.tar.gz
+ 398c665d4886f835bc1f4be7ca3edc19 2184 python optional lks-indicator_1.0_all.deb

@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "remove" ]; then
+	rm /usr/bin/lks-indicator
+	rm -r /usr/share/lks-indicator
+fi
+
+
+
+exit 0
