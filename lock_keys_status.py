@@ -52,11 +52,11 @@ class LockKeyStatusIndicator( object ):
             gtk.main()
         except KeyboardInterrupt:
             pass
-    def quit(self):
+
+    def quit(self,data=None):
         gtk.main_quit()
     
     def run_cmd(self,cmdlist):
-        # function for running 
         try:
             stdout = subprocess.check_output(cmdlist)
         except subprocess.CalledProcessError:
@@ -99,10 +99,9 @@ class LockKeyStatusIndicator( object ):
         self.update_label()
 
 def main():
-
     indicator = LockKeyStatusIndicator()
     indicator.run()
 
 if __name__ == '__main__':
-    main ()
+    main()
 
