@@ -34,6 +34,7 @@ The indicator menu has only one option - closing the indicator.
 
 ## Contributors
 - Sergiy Kolodyazhnyy
+- bharadwaj-raju 
 
 ## License
 The indicator is provided under MIT license, copy of which is included with the source code
