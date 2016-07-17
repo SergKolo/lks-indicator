@@ -30,75 +30,89 @@ import appindicator
 import gtk
 import os
 
-class LockKeyStatusIndicator( object ):
+class LockKeyStatusIndicator(object):
+
     def __init__(self):
              
         self.app = appindicator.Indicator('LKS', '', 
                           appindicator.CATEGORY_APPLICATION_STATUS)
-        self.app.set_status( appindicator.STATUS_ACTIVE )
+        
+        self.app.set_status(appindicator.STATUS_ACTIVE)
         
         self.update_label()
         
         self.app_menu = gtk.Menu()
-        self.quit_app = gtk.MenuItem( 'Quit' )
+        self.quit_app = gtk.MenuItem('Quit')
         self.quit_app.connect('activate', self.quit)
         self.quit_app.show()
         self.app_menu.append(self.quit_app)
         
         self.app.set_menu(self.app_menu)
+
         
     def run(self):
+       
         try:
             gtk.main()
         except KeyboardInterrupt:
             pass
 
-    def quit(self,data=None):
-        gtk.main_quit()
+    def quit(self, data=None):
     
-    def run_cmd(self,cmdlist):
+        gtk.main_quit()
+  
+    
+    def run_cmd(self, cmdlist):
+        
         try:
             stdout = subprocess.check_output(cmdlist)
         except subprocess.CalledProcessError:
                pass
         else:
             if stdout:
-                return  stdout
+                return stdout
+
     
     def key_status(self):
-        label = ""
+        
+        label = ''
         status = []
         keys = { '3':'C', '7':'N', '11':'S' }
     
-        for line in self.run_cmd( ['xset','q'] ).split("\n") :
-            if "Caps Lock:" in line:
+        for line in self.run_cmd(['xset', 'q']).split('\n') :
+            if 'Caps Lock:' in line:
                 status = line.split()
     
-        for index in 3,7,11:
+        for index in 3, 7, 11:
             if status[index] == "on" :
                label = label + " [" +  keys[ str(index)  ] + "] " 
             #else:
             #   label = label + keys[ str(index) ]
     
         return label
+
     
     def update_label(self):
-         cwd = os.getcwd()
-         red_icon = os.path.join(cwd,"red.png")
-         green_icon = os.path.join(cwd,"green.png")
-         label_text = self.key_status()
-         if "[" in label_text:
-              self.app.set_icon( red_icon )
-         else:
-              self.app.set_icon( green_icon  )
          
-         self.app.set_label( label_text )
-         glib.timeout_add_seconds(1,self.set_app_label )
+        cwd = os.getcwd()
+        red_icon = os.path.join(cwd, red.png)
+        green_icon = os.path.join(cwd, 'green.png')
+        label_text = self.key_status()
+        if '[' in label_text:
+            self.app.set_icon(red_icon)
+        else:
+            self.app.set_icon(green_icon)
+         
+        self.app.set_label(label_text)
+        glib.timeout_add_seconds(1, self.set_app_label)
+
     
     def set_app_label(self):
+        
         self.update_label()
 
 def main():
+    
     indicator = LockKeyStatusIndicator()
     indicator.run()
 
