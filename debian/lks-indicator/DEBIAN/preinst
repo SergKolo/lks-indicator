@@ -4,13 +4,7 @@ set -e  # exit on errors
 
 case "$1" in
     install|upgrade)
-        # Get lks-indicator from git
-        cd /tmp
-        wget -O lks.tar.gz https://github.com/SergKolo/lks-indicator/archive/master.tar.gz
-        tar xvzf lks.tar.gz
-        cd lks-indicator-master
-        echo $(pwd)
-        sh install.sh
+		mkdir -p /usr/share/lks-indicator
         ;;
 
     abort-upgrade)

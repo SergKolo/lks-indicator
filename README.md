@@ -19,7 +19,7 @@ GIF demonstration of lks-indicator:
 
 ### [![Ubuntu](https://www.pylint.org/assets/img/ubuntu.png)](https://ubuntu.com) Ubuntu and Debian
 
-Debian/Ubuntu `deb` package: [Download `lks-indicator-git.deb`](https://github.com/SergKolo/lks-indicator/raw/master/debian/lks-indicator-git.deb)
+Debian/Ubuntu `deb` package: [Download `lks-indicator.deb`](https://github.com/SergKolo/lks-indicator/raw/master/debian/lks-indicator.deb)
 
 ### Manual
 
