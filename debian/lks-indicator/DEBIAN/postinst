@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -e
+
+chmod a+x /usr/bin/lks-indicator

@@ -1,0 +1,16 @@
+Source: lks-indicator
+Section: python
+Priority: optional
+Maintainer: Sergiy Kolodyazhnyy, <1047481448@qq.com
+Build-Depends: debhelper (>= 7),
+               python (>= 2.6.6-3~)
+Standards-Version: 3.9.2
+X-Python-Version: >= 2.6
+
+
+Package: lks-indicator
+Architecture: all
+Section: python
+Depends: python-appindicator, ${misc:Depends}, ${python:Depends}
+Description: An indicator for Lock keys
+ Displays on/off status indicator for Lock keys at a glance.

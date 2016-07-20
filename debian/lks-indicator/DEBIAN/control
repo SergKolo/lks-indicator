@@ -1,0 +1,10 @@
+Package: lks-indicator
+Version: 1.0
+Architecture: all
+Maintainer: Sergiy Kolodyazhnyy, <1047481448@qq.com
+Installed-Size: 26
+Depends: python-appindicator, python:any
+Section: python
+Priority: optional
+Description: An indicator for Lock keys
+ Displays on/off status indicator for Lock keys at a glance.

@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -e  # exit on errors
+
+case "$1" in
+    install|upgrade)
+		mkdir -p /usr/share/lks-indicator
+        ;;
+
+    abort-upgrade)
+        ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 0
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0
