@@ -12,7 +12,7 @@ case "$1" in
 		;;
 
 	*)
-		cp lock_keys_status.py /usr/bin/lks-indicator
+		cp lks-indicator /usr/bin/lks-indicator
 		chmod a+x /usr/bin/lks-indicator
 		mkdir -p /usr/share/lks-indicator/
 		cp *.png /usr/share/lks-indicator/
