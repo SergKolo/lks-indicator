@@ -39,7 +39,7 @@ import gi
 gi.require_version('AppIndicator3', '0.1')
 
 from gi.repository import GLib as glib
-from gi.repository import AppIndicator3  as appindicator
+from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Gtk as gtk
 import os
 import subprocess
@@ -47,7 +47,7 @@ import argparse
 
 class LockKeyStatusIndicator(object):
 
-	def __init__(self, show_all=False):
+	def __init__(self, show_all=False, ignore_keys=None):
 
 		self.app = appindicator.Indicator.new('LKS', '',
 					  appindicator.IndicatorCategory.APPLICATION_STATUS)
@@ -56,15 +56,31 @@ class LockKeyStatusIndicator(object):
 
 		self.show_all = show_all
 
-		self.update_label()
-
 		self.app_menu = gtk.Menu()
 		self.quit_app = gtk.MenuItem('Quit')
 		self.quit_app.connect('activate', self.quit)
 		self.quit_app.show()
 		self.app_menu.append(self.quit_app)
 
+		if ignore_keys is None:
+			self.ignore_keys = []
+		else:
+			self.ignore_keys = ignore_keys
+
 		self.app.set_menu(self.app_menu)
+
+		self.app_path = os.path.dirname(os.path.realpath(__file__))
+		self.icon_path = self.app_path
+
+		if self.app_path == '/usr/bin':
+			self.icon_path = '/usr/share/lks-indicator/'
+		else:
+			self.icon_path = self.app_path
+
+		self.red_icon = os.path.join(self.icon_path, 'red.png')
+		self.green_icon = os.path.join(self.icon_path, 'green.png')
+
+		self.update_label()
 
 	def run(self):
 
@@ -72,6 +88,7 @@ class LockKeyStatusIndicator(object):
 			gtk.main()
 		except KeyboardInterrupt:
 			pass
+
 
 	def quit(self, data=None):
 
@@ -93,7 +110,12 @@ class LockKeyStatusIndicator(object):
 
 		label = ''
 		status = []
-		keys = { '3':'C', '7':'N', '11':'S' }
+		keys = {
+				'3'  : 'C',
+				'7'  : 'N',
+				'11' : 'S'
+				}
+
 		for line in self.run_cmd(['xset', 'q']).split('\n') :
 			if 'Caps Lock:' in line:
 				status = line.split()
@@ -101,9 +123,10 @@ class LockKeyStatusIndicator(object):
 		for index in 3, 7, 11:
 			# TODO: add option to ignore keys , pass as
 			# parameter to this function
-			#if keys[ str(index)  ] == ignore_keys:
-			#   continue
-			if status[index] == 'on':
+
+			if keys[str(index)] in self.ignore_keys:
+				pass
+			elif status[index] == 'on':
 				label += ' [' + keys[str(index)] + '] '
 			elif self.show_all:
 				label += keys[str(index)]
@@ -113,16 +136,12 @@ class LockKeyStatusIndicator(object):
 
 	def update_label(self):
 
-		cwd = os.getcwd()
-		#red_icon = '/usr/share/lks-indicator/red.png'
-		#green_icon = '/usr/share/lks-indicator/green.png'
-		red_icon = os.path.join(cwd, 'red.png')
-		green_icon = os.path.join(cwd, 'green.png')
 		label_text = self.key_status()
+
 		if '[' in label_text:
-			self.app.set_icon(red_icon)
+			self.app.set_icon(self.red_icon)
 		else:
-			self.app.set_icon(green_icon)
+			self.app.set_icon(self.green_icon)
 
 		self.app.set_label(label_text, '')
 		glib.timeout_add_seconds(1, self.set_app_label)
@@ -135,7 +154,7 @@ class LockKeyStatusIndicator(object):
 def main():
 
 	arg_parser = argparse.ArgumentParser(
-	description='''lks-indicator - Indicates on/off status of Lock keys (Caps, Scroll and Num).''',
+	description='''lks-indicator - Indicates on/off status of Lock keys.''',
 	formatter_class=argparse.RawTextHelpFormatter)
 
 	arg_parser.add_argument(
@@ -143,9 +162,16 @@ def main():
 		help='Show all keys, and mark switched-on keys by surrounding with brackets. \n \n',
 		required=False)
 
+	arg_parser.add_argument(
+		'--ignore-keys', type=str,
+		help='Ignore specified keys (C, N or S). \n \n',
+		nargs='+', required=False)
+
 	args = arg_parser.parse_args()
 
-	indicator = LockKeyStatusIndicator(show_all=args.show_all)
+	indicator = LockKeyStatusIndicator(
+		show_all=args.show_all, ignore_keys=args.ignore_keys)
+
 	indicator.run()
 
 if __name__ == '__main__':
