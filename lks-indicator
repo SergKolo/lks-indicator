@@ -5,7 +5,7 @@
 # Author: Serg Kolo <1047481448@qq.com>
 # Date: July 16, 2012
 # Purpose: Simple indicator of Caps, Num, and Scroll Lock
-#           keys for Ubuntu
+#		   keys for Ubuntu
 #
 # Written for: http://askubuntu.com/q/796985/295286
 # Tested on: Ubuntu 16.04 LTS
@@ -34,6 +34,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import gi
 gi.require_version('AppIndicator3', '0.1')
 
@@ -46,103 +47,106 @@ import argparse
 
 class LockKeyStatusIndicator(object):
 
-    def __init__(self, show_all=False):
+	def __init__(self, show_all=False):
 
-        self.app = appindicator.Indicator.new('LKS', '',
-                      appindicator.IndicatorCategory.APPLICATION_STATUS)
+		self.app = appindicator.Indicator.new('LKS', '',
+					  appindicator.IndicatorCategory.APPLICATION_STATUS)
 
-        self.app.set_status(appindicator.IndicatorStatus.ACTIVE)
+		self.app.set_status(appindicator.IndicatorStatus.ACTIVE)
 
-        self.update_label()
+		self.show_all = show_all
 
-        self.app_menu = gtk.Menu()
-        self.quit_app = gtk.MenuItem('Quit')
-        self.quit_app.connect('activate', self.quit)
-        self.quit_app.show()
-        self.app_menu.append(self.quit_app)
+		self.update_label()
 
-        self.app.set_menu(self.app_menu)
-        self.show_all = show_all
+		self.app_menu = gtk.Menu()
+		self.quit_app = gtk.MenuItem('Quit')
+		self.quit_app.connect('activate', self.quit)
+		self.quit_app.show()
+		self.app_menu.append(self.quit_app)
 
-    def run(self):
+		self.app.set_menu(self.app_menu)
 
-        try:
-            gtk.main()
-        except KeyboardInterrupt:
-            pass
+	def run(self):
 
-    def quit(self, data=None):
+		try:
+			gtk.main()
+		except KeyboardInterrupt:
+			pass
 
-        gtk.main_quit()
+	def quit(self, data=None):
 
-
-    def run_cmd(self, cmdlist):
-
-        try:
-            stdout = subprocess.check_output(cmdlist)
-        except subprocess.CalledProcessError:
-               pass
-        else:
-            if stdout is not None:
-                return stdout.decode('utf-8').rstrip('\n')
+		gtk.main_quit()
 
 
-    def key_status(self):
+	def run_cmd(self, cmdlist):
 
-        label = ''
-        status = []
-        keys = { '3':'C', '7':'N', '11':'S' }
-        for line in self.run_cmd(['xset', 'q']).split('\n') :
-            if 'Caps Lock:' in line:
-                status = line.split()
-
-        for index in 3, 7, 11:
-                        # TODO: add option to ignore keys , pass as
-                        # parameter to this function
-                        #if keys[ str(index)  ] == ignore_keys:
-                        #   continue
-                        if status[index] == 'on':
-                            label += ' [' + keys[str(index)] + '] '
-                        elif self.show_all:
-                            label += keys[str(index)]
-
-        return label
+		try:
+			stdout = subprocess.check_output(cmdlist)
+		except subprocess.CalledProcessError:
+			   pass
+		else:
+			if stdout is not None:
+				return stdout.decode('utf-8').rstrip('\n')
 
 
-    def update_label(self):
+	def key_status(self):
 
-        cwd = os.getcwd()
-        red_icon = '/usr/share/lks-indicator/red.png'
-        green_icon = '/usr/share/lks-indicator/green.png'
-        label_text = self.key_status()
-        if '[' in label_text:
-            self.app.set_icon(red_icon)
-        else:
-            self.app.set_icon(green_icon)
+		label = ''
+		status = []
+		keys = { '3':'C', '7':'N', '11':'S' }
+		for line in self.run_cmd(['xset', 'q']).split('\n') :
+			if 'Caps Lock:' in line:
+				status = line.split()
 
-        self.app.set_label(label_text, '')
-        glib.timeout_add_seconds(1, self.set_app_label)
+		for index in 3, 7, 11:
+			# TODO: add option to ignore keys , pass as
+			# parameter to this function
+			#if keys[ str(index)  ] == ignore_keys:
+			#   continue
+			if status[index] == 'on':
+				label += ' [' + keys[str(index)] + '] '
+			elif self.show_all:
+				label += keys[str(index)]
+
+		return label
 
 
-    def set_app_label(self):
+	def update_label(self):
 
-        self.update_label()
+		cwd = os.getcwd()
+		#red_icon = '/usr/share/lks-indicator/red.png'
+		#green_icon = '/usr/share/lks-indicator/green.png'
+		red_icon = os.path.join(cwd, 'red.png')
+		green_icon = os.path.join(cwd, 'green.png')
+		label_text = self.key_status()
+		if '[' in label_text:
+			self.app.set_icon(red_icon)
+		else:
+			self.app.set_icon(green_icon)
+
+		self.app.set_label(label_text, '')
+		glib.timeout_add_seconds(1, self.set_app_label)
+
+
+	def set_app_label(self):
+
+		self.update_label()
 
 def main():
 
-    arg_parser = argparse.ArgumentParser(
-    description='''lks-indicator - Indicates on/off status of Lock keys (Caps, Scroll and Num).''',
-    formatter_class=argparse.RawTextHelpFormatter)
+	arg_parser = argparse.ArgumentParser(
+	description='''lks-indicator - Indicates on/off status of Lock keys (Caps, Scroll and Num).''',
+	formatter_class=argparse.RawTextHelpFormatter)
 
-    arg_parser.add_argument(
-        '--show-all', action='store_true',
-        help='Show all keys, and mark switched-on keys by surrounding with brackets. \n \n',
-        required=False)
+	arg_parser.add_argument(
+		'--show-all', action='store_true',
+		help='Show all keys, and mark switched-on keys by surrounding with brackets. \n \n',
+		required=False)
 
-    args = arg_parser.parse_args()
+	args = arg_parser.parse_args()
 
-    indicator = LockKeyStatusIndicator(show_all=args.show_all)
-    indicator.run()
+	indicator = LockKeyStatusIndicator(show_all=args.show_all)
+	indicator.run()
 
 if __name__ == '__main__':
-    main()
+	main()
