@@ -2,10 +2,10 @@
 # coding: utf-8
 
 ###########################################################
-# Author: Serg Kolo , contact: 1047481448@qq.com
+# Author: Serg Kolo <1047481448@qq.com>
 # Date: July 16, 2012
 # Purpose: Simple indicator of Caps, Num, and Scroll Lock
-#          keys for Ubuntu
+#		   keys for Ubuntu
 #
 # Written for: http://askubuntu.com/q/796985/295286
 # Tested on: Ubuntu 16.04 LTS
@@ -15,20 +15,19 @@
 # Licensed under The MIT License (MIT).
 # See included LICENSE file or the notice below.
 #
-# Copyright © 2016 Sergiy Kolodyazhnyy
+# Copyright © 2016 Sergiy Kolodyazhnyy <1047481448@qq.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
+# of this software and associated documentation files (the 'Software'), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice
-# shall be included in all
+# The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -36,23 +35,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import glib
-import subprocess
-import appindicator
-import gtk
-import sys
+import gi
+gi.require_version('AppIndicator3', '0.1')
 
+from gi.repository import GLib as glib
+from gi.repository import AppIndicator3 as appindicator
+from gi.repository import Gtk as gtk
+import os
+import subprocess
+import argparse
 
 class LockKeyStatusIndicator(object):
 
-	def __init__(self):
+	def __init__(self, show_all=False, ignore_keys=None):
 
-		self.app = appindicator.Indicator(
-			'LKS', '', appindicator.CATEGORY_APPLICATION_STATUS)
+		self.app = appindicator.Indicator.new('LKS', '',
+					  appindicator.IndicatorCategory.APPLICATION_STATUS)
 
-		self.app.set_status(appindicator.STATUS_ACTIVE)
+		self.app.set_status(appindicator.IndicatorStatus.ACTIVE)
 
-		self.update_label()
+		self.show_all = show_all
 
 		self.app_menu = gtk.Menu()
 		self.quit_app = gtk.MenuItem('Quit')
@@ -60,7 +62,25 @@ class LockKeyStatusIndicator(object):
 		self.quit_app.show()
 		self.app_menu.append(self.quit_app)
 
+		if ignore_keys is None:
+			self.ignore_keys = []
+		else:
+			self.ignore_keys = ignore_keys
+
 		self.app.set_menu(self.app_menu)
+
+		self.app_path = os.path.dirname(os.path.realpath(__file__))
+		self.icon_path = self.app_path
+
+		if self.app_path == '/usr/bin':
+			self.icon_path = '/usr/share/lks-indicator/'
+		else:
+			self.icon_path = self.app_path
+
+		self.red_icon = os.path.join(self.icon_path, 'red.png')
+		self.green_icon = os.path.join(self.icon_path, 'green.png')
+
+		self.update_label()
 
 	def run(self):
 
@@ -69,63 +89,89 @@ class LockKeyStatusIndicator(object):
 		except KeyboardInterrupt:
 			pass
 
+
 	def quit(self, data=None):
 
 		gtk.main_quit()
+
 
 	def run_cmd(self, cmdlist):
 
 		try:
 			stdout = subprocess.check_output(cmdlist)
 		except subprocess.CalledProcessError:
-				pass
+			   pass
 		else:
-			if stdout:
-				return stdout
+			if stdout is not None:
+				return stdout.decode('utf-8').rstrip('\n')
+
 
 	def key_status(self):
 
 		label = ''
 		status = []
 		keys = {
-				'3': 'C',
-				'7': 'N',
-				'11': 'S'
+				'3'  : 'C',
+				'7'  : 'N',
+				'11' : 'S'
 				}
 
-		for line in self.run_cmd(['xset', 'q']).split('\n'):
+		for line in self.run_cmd(['xset', 'q']).split('\n') :
 			if 'Caps Lock:' in line:
 				status = line.split()
 
 		for index in 3, 7, 11:
-			if status[index] == 'on':
+			# TODO: add option to ignore keys , pass as
+			# parameter to this function
+
+			if keys[str(index)] in self.ignore_keys:
+				pass
+			elif status[index] == 'on':
 				label += ' [' + keys[str(index)] + '] '
-			elif '--show-all' in sys.argv:
+			elif self.show_all:
 				label += keys[str(index)]
 
 		return label
 
+
 	def update_label(self):
 
-		red_icon = '/usr/share/lks-indicator/red.png'
-		green_icon = '/usr/share/lks-indicator/green.png'
 		label_text = self.key_status()
-		if '[' in label_text:
-			self.app.set_icon(red_icon)
-		else:
-			self.app.set_icon(green_icon)
 
-		self.app.set_label(label_text)
+		if '[' in label_text:
+			self.app.set_icon(self.red_icon)
+		else:
+			self.app.set_icon(self.green_icon)
+
+		self.app.set_label(label_text, '')
 		glib.timeout_add_seconds(1, self.set_app_label)
+
 
 	def set_app_label(self):
 
 		self.update_label()
 
-
 def main():
 
-	indicator = LockKeyStatusIndicator()
+	arg_parser = argparse.ArgumentParser(
+	description='''lks-indicator - Indicates on/off status of Lock keys.''',
+	formatter_class=argparse.RawTextHelpFormatter)
+
+	arg_parser.add_argument(
+		'--show-all', action='store_true',
+		help='Show all keys, and mark switched-on keys by surrounding with brackets. \n \n',
+		required=False)
+
+	arg_parser.add_argument(
+		'--ignore-keys', type=str,
+		help='Ignore specified keys (C, N or S). \n \n',
+		nargs='+', required=False)
+
+	args = arg_parser.parse_args()
+
+	indicator = LockKeyStatusIndicator(
+		show_all=args.show_all, ignore_keys=args.ignore_keys)
+
 	indicator.run()
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ Architecture: source all
 Version: 1.0
 Distribution: RELEASED
 Urgency: medium
-Maintainer: Sergiy Kolodyazhnyy, <1047481448@qq.com
+Maintainer: Sergiy Kolodyazhnyy, 1047481448@qq.com
 Changed-By: Sergiy Kolodyazhnyy <1047481448@qq.com>
 Description:
  lks-indicator - An indicator for Lock keys
