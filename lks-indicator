@@ -50,7 +50,7 @@ class LockKeyStatusIndicator(object):
 
         self.app.set_status(appindicator.IndicatorStatus.ACTIVE)
 
-        self.update_label()
+
 
         self.app_menu = gtk.Menu()
         self.quit_app = gtk.MenuItem('Quit')
@@ -60,6 +60,13 @@ class LockKeyStatusIndicator(object):
 
         self.app.set_menu(self.app_menu)
 
+        self.app_path = os.path.dirname( os.path.realpath(__file__) )
+        self.icon_path = self.app_path
+
+        if self.app_path == "/usr/bin":
+           self.icon_path = "/usr/share/lks-indicator/"
+
+        self.update_label()
     def run(self): 
 
         try: 
@@ -105,9 +112,8 @@ class LockKeyStatusIndicator(object):
 
     def update_label(self):
 
-        cwd = os.getcwd()
-        red_icon = os.path.join(cwd, 'red.png')
-        green_icon = os.path.join(cwd, 'green.png')
+        red_icon = os.path.join(self.icon_path, 'red.png')
+        green_icon = os.path.join(self.icon_path, 'green.png')
         label_text = self.key_status()
         if '[' in label_text:
             self.app.set_icon(red_icon)
