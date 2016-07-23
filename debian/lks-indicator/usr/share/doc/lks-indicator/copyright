@@ -1,12 +1,12 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: lks-indicator
-Upstream-Contact: Sergiy Kolodyazhnyy, <1047481448@qq.com>
+Upstream-Contact: Sergiy Kolodyazhnyy, 1047481448@qq.com>
 
 Files: *
-Copyright: 2016, Sergiy Kolodyazhnyy, <1047481448@qq.com> 
+Copyright: 2016, Sergiy Kolodyazhnyy, 1047481448@qq.com> 
 License: (MIT)
  The MIT License (MIT)
- .
+
  Copyright © 2016 Sergiy Kolodyazhnyy
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
