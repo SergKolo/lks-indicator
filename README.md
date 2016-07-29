@@ -33,8 +33,7 @@ And to uninstall:
 
 ## Usage
 
-lks-indicator [-h] [--show-all]
-                     [--ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]]
+`lks-indicator [-h] [--show-all] [--ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]]`
 
 
 optional arguments:
