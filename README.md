@@ -33,6 +33,19 @@ And to uninstall:
 
 ## Usage
 
+lks-indicator [-h] [--show-all]
+                     [--ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]]
+
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --show-all            Show all keys, and mark switched-on keys by surrounding with brackets. 
+                         
+  --ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]
+                        Ignore specified keys (C, N or S). 
+
+### Overview of options and behavior
+
 When none of Scroll, Caps or Num lock are pressed, the indicator will be green.
 
 When one or more lock keys are active, the indicator becomes red, and the following is displayed:
@@ -41,14 +54,22 @@ When one or more lock keys are active, the indicator becomes red, and the follow
 - *\[N\]* for *Num Lock*
 - *\[S\]* for *Scroll Lock*
 
+
+
 The indicator menu has only one option - closing the indicator (*Quit*).
 
-The program has an option, `--show-all`, which makes it run so:
+`--show-all` option will show all keys on the indicator and put specific letter into 
+brackets do indicate that lock key being active.
 
 [![show-all no key pressed](http://i.imgur.com/LFmhJQ8.png)](http://i.imgur.com/LFmhJQ8.png)
 
 
 [![show-all numlock on](http://i.imgur.com/CUnnsbh.png)](http://i.imgur.com/CUnnsbh.png)
+
+
+`--ignore-keys` takes one or more capital letters C,N, or S separated by space, e.g. 
+`--ignore-keys C N`. If this option is used, the indicator will ignore those keys being
+activated 
 
 ## License
 
