@@ -38,9 +38,12 @@ lks-indicator [-h] [--show-all]
 
 
 optional arguments:
+
   -h, --help            show this help message and exit
+
   --show-all            Show all keys, and mark switched-on keys by surrounding with brackets. 
                          
+
   --ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]
                         Ignore specified keys (C, N or S). 
 
