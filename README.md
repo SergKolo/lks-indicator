@@ -7,6 +7,7 @@ It was originally written for Ubuntu Unity, and has been tested on Ubuntu 16.04 
 Still, it will run fine on any desktop/distro that supports AppIndicator.
 
 Screenshot with monochrome icon ( `-m` option )
+
 ![Screenshot](http://i.imgur.com/wJ23PwZ.png)
 
 Regular ( red and green icons )
