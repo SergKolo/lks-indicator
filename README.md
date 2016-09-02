@@ -6,14 +6,17 @@ It was originally written for Ubuntu Unity, and has been tested on Ubuntu 16.04 
 
 Still, it will run fine on any desktop/distro that supports AppIndicator.
 
+Screenshot with monochrome icon ( `-m` option )
+[![Screenshot]](http://i.imgur.com/wJ23PwZ.png)
+
+Regular ( red and green icons )
+
+[![Screenshot]](http://i.imgur.com/9FmG65T.png)
+
 ## Motivation for the project
 
 Originally this had been written as an answer for ByteCommander's question at [AskUbuntu](http://askubuntu.com): [Keyboard LED panel indicator for Unity Desktop](http://askubuntu.com/q/796985/295286). Eventually it has been decided to turn it into standalone project.
 
-## Demo
-GIF demonstration of lks-indicator:
-
-[![GIF demonstration of lks-indicator](http://i.imgur.com/FxSae8c.gif)](http://i.imgur.com/FxSae8c.gif)
 
 ## Installation
 
@@ -62,11 +65,6 @@ The indicator menu has only one option - closing the indicator (*Quit*).
 
 `--show-all` option will show all keys on the indicator and put specific letter into 
 brackets do indicate that lock key being active.
-
-[![show-all no key pressed](http://i.imgur.com/LFmhJQ8.png)](http://i.imgur.com/LFmhJQ8.png)
-
-
-[![show-all numlock on](http://i.imgur.com/CUnnsbh.png)](http://i.imgur.com/CUnnsbh.png)
 
 
 `--ignore-keys` takes one or more capital letters C,N, or S separated by space, e.g. 
