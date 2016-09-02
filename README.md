@@ -36,20 +36,19 @@ And to uninstall:
     sudo sh install.sh --uninstall
 
 ## Usage
+```
+usage: lks-indicator [-h] [--show-all] [-m]
+                     [--ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]]
 
-`lks-indicator [-h] [--show-all] [--ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]]`
-
+lks-indicator - Indicates on/off status of Lock keys.
 
 optional arguments:
-
   -h, --help            show this help message and exit
-
-  --show-all            Show all keys, and mark switched-on keys by surrounding with brackets. 
-                         
-
+  --show-all            Show all keys in label
+  -m, --monochrome      Use monochrome icon
   --ignore-keys IGNORE_KEYS [IGNORE_KEYS ...]
-                        Ignore specified keys (C, N or S). 
-
+                        Ignore specified keys (C, N or S)
+```
 ### Overview of options and behavior
 
 When none of Scroll, Caps or Num lock are pressed, the indicator will be green.
