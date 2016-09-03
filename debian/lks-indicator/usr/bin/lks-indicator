@@ -1,5 +1,5 @@
 #! /usr/bin/python
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 ###########################################################
 # Author: Serg Kolo <1047481448@qq.com>
@@ -47,13 +47,13 @@ import argparse
 
 class LockKeyStatusIndicator(object):
 
-	def __init__(self, show_all=False, ignore_keys=None):
+	def __init__(self, show_all=False, ignore_keys=None, monochrome=False):
 
 		self.app = appindicator.Indicator.new('LKS', '',
 					  appindicator.IndicatorCategory.APPLICATION_STATUS)
 
 		self.app.set_status(appindicator.IndicatorStatus.ACTIVE)
-
+		self.monochrome = monochrome
 		self.show_all = show_all
 
 		self.app_menu = gtk.Menu()
@@ -79,6 +79,7 @@ class LockKeyStatusIndicator(object):
 
 		self.red_icon = os.path.join(self.icon_path, 'red.png')
 		self.green_icon = os.path.join(self.icon_path, 'green.png')
+		self.monochrome_icon = os.path.join(self.icon_path, 'lks-icon-monochrome.png')
 
 		self.update_label()
 
@@ -121,9 +122,6 @@ class LockKeyStatusIndicator(object):
 				status = line.split()
 
 		for index in 3, 7, 11:
-			# TODO: add option to ignore keys , pass as
-			# parameter to this function
-
 			if keys[str(index)] in self.ignore_keys:
 				pass
 			elif status[index] == 'on':
@@ -137,12 +135,17 @@ class LockKeyStatusIndicator(object):
 	def update_label(self):
 
 		label_text = self.key_status()
-
-		if '[' in label_text:
-			self.app.set_icon(self.red_icon)
+		if not self.monochrome:
+			if '[' in label_text:
+				self.app.set_icon(self.red_icon)
+			else:
+				self.app.set_icon(self.green_icon)
 		else:
-			self.app.set_icon(self.green_icon)
-
+			self.app.set_icon(self.monochrome_icon)
+			label_text = label_text.replace('[C]',u'\u24B8')
+			label_text = label_text.replace('[N]',u'\u24C3')
+			label_text = label_text.replace('[S]',u'\u24C8')
+				
 		self.app.set_label(label_text, '')
 		glib.timeout_add_seconds(1, self.set_app_label)
 
@@ -154,23 +157,28 @@ class LockKeyStatusIndicator(object):
 def main():
 
 	arg_parser = argparse.ArgumentParser(
-	description='''lks-indicator - Indicates on/off status of Lock keys.''',
-	formatter_class=argparse.RawTextHelpFormatter)
+		description='''lks-indicator - Indicates on/off status of Lock keys.''',
+		formatter_class=argparse.RawTextHelpFormatter)
 
 	arg_parser.add_argument(
 		'--show-all', action='store_true',
-		help='Show all keys, and mark switched-on keys by surrounding with brackets. \n \n',
-		required=False)
+		help='Show all keys in label', required=False)
+
+	arg_parser.add_argument(
+		'-m','--monochrome', action='store_true',
+		help='Use monochrome icon')
 
 	arg_parser.add_argument(
 		'--ignore-keys', type=str,
-		help='Ignore specified keys (C, N or S). \n \n',
+		help='Ignore specified keys (C, N or S)',
 		nargs='+', required=False)
 
 	args = arg_parser.parse_args()
 
 	indicator = LockKeyStatusIndicator(
-		show_all=args.show_all, ignore_keys=args.ignore_keys)
+		show_all=args.show_all, 
+		ignore_keys=args.ignore_keys,
+		monochrome=args.monochrome)
 
 	indicator.run()
 

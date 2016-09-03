@@ -3,7 +3,7 @@ Version: 1.0
 Architecture: all
 Maintainer: Sergiy Kolodyazhnyy, 1047481448@qq.com
 Installed-Size: 21
-Depends: python-appindicator, python:any
+Depends: python:any
 Section: python
 Priority: optional
 Description: An indicator for Lock keys
